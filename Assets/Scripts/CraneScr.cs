@@ -43,7 +43,7 @@ public class CraneScr : MonoBehaviour
 			Rigidbody2D animalBody = payload.GetComponent<Rigidbody2D> ();
 			animalBody.isKinematic = false;
 			payload.transform.parent = pile.transform;
-			payload.tag = "Dropped";
+			payload.tag = "Dropping";
 
 			Invoke ("GenerateChild", generationTime);
 		}
