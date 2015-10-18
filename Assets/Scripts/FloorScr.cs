@@ -3,13 +3,18 @@ using System.Collections;
 
 public class FloorScr : MonoBehaviour {
 
+	private GameMgrScr mgr;
+
+	void Start()
+	{
+		mgr = GameObject.Find ("GameMgr").GetComponent<GameMgrScr> ();
+	}
+
 	void OnTriggerEnter2D(Collider2D collider)
 	{
 		if (collider.gameObject.tag == "Dropping") {
-			if(GameObject.Find("GameMgr").GetComponent<GameMgrScr>().AllowBlock())
-			{
-				collider.gameObject.tag = "Dropped";
-			}
+			mgr.AllowBlock(collider.gameObject);
+			collider.gameObject.tag = "Dropped";
 		}
 	}
 }

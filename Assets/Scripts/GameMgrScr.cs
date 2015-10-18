@@ -2,8 +2,14 @@
 using System.Collections;
 
 public class GameMgrScr : MonoBehaviour {
+	
+	private GameObject topBlock;
+	private bool topBlockTriggered = true;
+	private int blockNum = 0;
 
-	private bool pileStarted = false;
+	public GameObject summon1;
+	public int summonPointX;
+	public int summonPointY;
 
 	// Use this for initialization
 	void Start () {
@@ -15,16 +21,57 @@ public class GameMgrScr : MonoBehaviour {
 		
 	}
 
-	public bool AllowBlock()
+	// Determine whether to allow subsequent block based on trigger
+	public bool AllowBlock(GameObject block)
 	{
-		if (!pileStarted) {
-			pileStarted = true;
-			return true;
+		if (topBlockTriggered) {
+			if(topBlock != null && block.transform.position.y > topBlock.transform.position.y)
+			{
+				SetTopBlock (block);
+				return true;
+			}
 		}
+
+		DestroyBlocks ();
+		SetTopBlock (block);
+		return false;
+	}
+
+	// Trigger when block is laid on top (should only apply to topmost block)
+	public void TriggerBlock(GameObject block)
+	{
+		if (block.name == topBlock.name) {
+			topBlockTriggered = true;
+		}
+	}
+
+	public string AssignName()
+	{
+		blockNum++;
+		return "Block_" + blockNum;
+	}
+
+	public void PlayerSummon()
+	{
+		GameObject.Instantiate (summon1, new Vector3 (summonPointX, summonPointY, 0), Quaternion.identity);
+		DestroyBlocks ();
+	}
+
+	// Set the top block
+	private void SetTopBlock(GameObject block)
+	{
+		topBlock = block;
+		topBlockTriggered = false;
+	}
+
+	private void DestroyBlocks()
+	{
 		GameObject[] objs = GameObject.FindGameObjectsWithTag ("Dropped");
 		foreach (GameObject obj in objs) {
 			Destroy(obj);
 		}
-		return false;
+
+		topBlock = null;
+		topBlockTriggered = false;
 	}
 }

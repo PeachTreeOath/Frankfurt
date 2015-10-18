@@ -17,10 +17,13 @@ public class CraneScr : MonoBehaviour
 	private GameObject pile;
 	private List<GameObject> animalPFs;
 	private float currSpeed;
+	private GameMgrScr mgr;
 
 	// Use this for initialization
 	void Start ()
 	{
+		mgr = GameObject.Find ("GameMgr").GetComponent<GameMgrScr> ();
+
 		currSpeed = speed;
 		body = GetComponent<Rigidbody2D> ();
 		body.velocity = new Vector2 (currSpeed, 0);
@@ -44,7 +47,7 @@ public class CraneScr : MonoBehaviour
 			animalBody.isKinematic = false;
 			payload.transform.parent = pile.transform;
 			payload.tag = "Dropping";
-
+			payload.name = mgr.AssignName();
 			Invoke ("GenerateChild", generationTime);
 		}
 
@@ -59,11 +62,12 @@ public class CraneScr : MonoBehaviour
 	private void GenerateChild ()
 	{
 		int index = Random.Range (0, 4);
-		Debug.Log (index);
 		GameObject pf = animalPFs [index];
 		GameObject newObj = (GameObject)Instantiate (pf, new Vector3 (0, 0, 0), Quaternion.identity);
 		Transform newTransform = newObj.GetComponent<Transform> ();
 		newTransform.parent = transform;
 		newTransform.localPosition = new Vector2 (0, 0);
+		Rigidbody2D newBody = newObj.GetComponent<Rigidbody2D> ();
+		newBody.velocity = new Vector2(0,-1);
 	}
 }
