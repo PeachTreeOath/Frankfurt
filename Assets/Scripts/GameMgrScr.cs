@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
 
 public class GameMgrScr : MonoBehaviour
 {
@@ -14,9 +15,19 @@ public class GameMgrScr : MonoBehaviour
 	private CraneScr crane;
 	private Camera cam;
 
+	public List<GameObject>  summonPFs;
 	public GameObject summon1;
-	public int summonPointX;
-	public int summonPointY;
+	public GameObject summon2;
+	public GameObject summon3;
+	public GameObject summon4;
+	public GameObject summon5;
+	public GameObject summon6;
+	public GameObject summon7;
+	public GameObject summon8;
+	public GameObject summon9;
+
+	public float summonPointX;
+	public float summonPointY;
 
 	// Use this for initialization
 	void Start ()
@@ -25,6 +36,17 @@ public class GameMgrScr : MonoBehaviour
 		summonButton = GameObject.Find ("SummonButton").GetComponent<Button> ();
 		crane = GameObject.Find ("Crane").GetComponent<CraneScr> ();
 		cam = GameObject.Find ("Main Camera").GetComponent<Camera> ();
+
+		summonPFs = new List<GameObject> ();
+		summonPFs.Add (summon1);
+		summonPFs.Add (summon2);
+		summonPFs.Add (summon3);
+		summonPFs.Add (summon4);
+		summonPFs.Add (summon5);
+		summonPFs.Add (summon6);
+		summonPFs.Add (summon7);
+		summonPFs.Add (summon8);
+		summonPFs.Add (summon9);
 	}
 	
 	// Update is called once per frame
@@ -35,6 +57,8 @@ public class GameMgrScr : MonoBehaviour
 		}
 		else if (stackHeight > 0) {
 			summonButton.interactable = true;
+			crane.GenerateChild();
+			crane.SetSpeed(stackHeight);
 		}
 	}
 
@@ -72,7 +96,9 @@ public class GameMgrScr : MonoBehaviour
 		if (!summonButton.interactable) {
 			return;
 		}
-		GameObject newSummon = (GameObject)GameObject.Instantiate (summon1, new Vector3 (summonPointX, summonPointY, 0), Quaternion.identity);
+
+		GameObject summonPF = summonPFs[stackHeight-1];
+		GameObject newSummon = (GameObject)GameObject.Instantiate (summonPF, new Vector3 (summonPointX+summonPF.GetComponent<SpriteRenderer>().bounds.size.x/2, summonPointY+summonPF.GetComponent<SpriteRenderer>().bounds.size.y/2, 0), Quaternion.identity);
 		newSummon.transform.parent = summonParent.transform;
 
 		PlayBlocks ();
@@ -85,8 +111,9 @@ public class GameMgrScr : MonoBehaviour
 		topBlock = block;
 		topBlockTriggered = false;
 		stackHeight++;
+		crane.SetSpeed(stackHeight);
 		summonButton.interactable = true;
-
+		summonButton.GetComponentInChildren<Text>().text = "SUMMON LVL " + stackHeight;
 		cam.transform.position = new Vector3 (cam.transform.position.x, cam.transform.position.y + block.GetComponent<SpriteRenderer>().bounds.size.y, cam.transform.position.z);
 		crane.transform.position = new Vector3 (crane.transform.position.x, crane.transform.position.y + block.GetComponent<SpriteRenderer>().bounds.size.y, crane.transform.position.z);
 	}
@@ -117,7 +144,9 @@ public class GameMgrScr : MonoBehaviour
 		topBlock = null;
 		topBlockTriggered = false;
 		stackHeight = 0;
+		crane.SetSpeed(stackHeight);
 		summonButton.interactable = false;
+		summonButton.GetComponentInChildren<Text>().text = "SUMMON";
 
 		cam.transform.position = new Vector3 (0, 0, cam.transform.position.z);
 		crane.transform.position = new Vector3 (0, 3, crane.transform.position.z);

@@ -3,7 +3,7 @@ using System.Collections;
 
 public class SummonScr : MonoBehaviour {
 
-	public float growthSpeed = 0.05f;
+	public float growthSpeed = 0.003f;
 	public float moveSpeed = 3;
 
 	private Rigidbody2D body;

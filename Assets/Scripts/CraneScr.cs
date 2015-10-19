@@ -6,13 +6,15 @@ public class CraneScr : MonoBehaviour
 {
 	public int boundL;
 	public int boundR;
-	public float speed;
+	public float origSpeed = 8;
+	public float speedMultiplier = 1;
 	public float generationTime;
 	public GameObject animalPF1;
 	public GameObject animalPF2;
 	public GameObject animalPF3;
 	public GameObject animalPF4;
 
+	private float speed;
 	private Rigidbody2D body;
 	private GameObject pile;
 	private List<GameObject> animalPFs;
@@ -25,7 +27,8 @@ public class CraneScr : MonoBehaviour
 	{
 		mgr = GameObject.Find ("GameMgr").GetComponent<GameMgrScr> ();
 
-		currSpeed = speed;
+		currSpeed = origSpeed;
+		speed = origSpeed;
 		body = GetComponent<Rigidbody2D> ();
 		body.velocity = new Vector2 (currSpeed, 0);
 
@@ -49,7 +52,7 @@ public class CraneScr : MonoBehaviour
 			payload.transform.parent = pile.transform;
 			payload.tag = "Dropping";
 			payload.name = mgr.AssignName();
-			Invoke ("GenerateChild", generationTime);
+			//Invoke ("GenerateChild", generationTime);
 		}
 
 		if (transform.position.x > boundR) {
@@ -60,8 +63,12 @@ public class CraneScr : MonoBehaviour
 		body.velocity = new Vector2 (currSpeed, 0);
 	}
 
-	private void GenerateChild ()
+	public void GenerateChild ()
 	{
+		if (GetComponentInChildren<AnimalScr> () != null) {
+			return;
+		}
+
 		int index = Random.Range (0, 4);
 		GameObject pf = animalPFs [index];
 		GameObject newObj = (GameObject)Instantiate (pf, new Vector3 (0, 0, 0), Quaternion.identity);
@@ -75,12 +82,19 @@ public class CraneScr : MonoBehaviour
 	public void Disable()
 	{
 		disabled = true;
+		GetComponentInChildren<BoxCollider2D> ().enabled = false;
 		GameObject.FindGameObjectWithTag ("Undropped").GetComponent<SpriteRenderer>().sortingLayerName = "Hidden";
 	}
 
 	public void Enable()
 	{
 		disabled = false;
+		GetComponentInChildren<BoxCollider2D> ().enabled = true;
 		GameObject.FindGameObjectWithTag ("Undropped").GetComponent<SpriteRenderer>().sortingLayerName = "Default";
+	}
+
+	public void SetSpeed(int level)
+	{
+		speed = origSpeed + speedMultiplier * level;
 	}
 }
