@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 public class CraneScr : MonoBehaviour
 {
-
 	public int boundL;
 	public int boundR;
 	public float speed;
@@ -13,11 +12,13 @@ public class CraneScr : MonoBehaviour
 	public GameObject animalPF2;
 	public GameObject animalPF3;
 	public GameObject animalPF4;
+
 	private Rigidbody2D body;
 	private GameObject pile;
 	private List<GameObject> animalPFs;
 	private float currSpeed;
 	private GameMgrScr mgr;
+	private bool disabled = false;
 
 	// Use this for initialization
 	void Start ()
@@ -42,7 +43,7 @@ public class CraneScr : MonoBehaviour
 	void Update ()
 	{
 		GameObject payload = GameObject.FindGameObjectWithTag ("Undropped");
-		if (Input.GetButtonDown ("Jump") && payload != null) {
+		if (Input.GetButtonDown ("Jump") && !disabled && payload != null) {
 			Rigidbody2D animalBody = payload.GetComponent<Rigidbody2D> ();
 			animalBody.isKinematic = false;
 			payload.transform.parent = pile.transform;
@@ -69,5 +70,17 @@ public class CraneScr : MonoBehaviour
 		newTransform.localPosition = new Vector2 (0, 0);
 		Rigidbody2D newBody = newObj.GetComponent<Rigidbody2D> ();
 		newBody.velocity = new Vector2(0,-1);
+	}
+
+	public void Disable()
+	{
+		disabled = true;
+		GameObject.FindGameObjectWithTag ("Undropped").GetComponent<SpriteRenderer>().sortingLayerName = "Hidden";
+	}
+
+	public void Enable()
+	{
+		disabled = false;
+		GameObject.FindGameObjectWithTag ("Undropped").GetComponent<SpriteRenderer>().sortingLayerName = "Default";
 	}
 }
