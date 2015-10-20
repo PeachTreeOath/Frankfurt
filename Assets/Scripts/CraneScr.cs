@@ -52,7 +52,6 @@ public class CraneScr : MonoBehaviour
 			payload.transform.parent = pile.transform;
 			payload.tag = "Dropping";
 			payload.name = mgr.AssignName();
-			//Invoke ("GenerateChild", generationTime);
 		}
 
 		if (transform.position.x > boundR) {

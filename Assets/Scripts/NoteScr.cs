@@ -15,7 +15,7 @@ public class NoteScr : MonoBehaviour {
 		body = GetComponent<Rigidbody2D> ();	
 		body.velocity = new Vector2 (speed, 0);
 
-		currWaveSpeed = waveSpeed;
+		currWaveSpeed = waveSpeed * Random.Range(-1f, 1f);
 
 		Invoke ("DestroySelf", 3f);
 	}
